@@ -1,5 +1,5 @@
 import { User } from "@/domain/entities/User";
-import { IUseCase } from "../usecase";
+import { IUseCase } from "../IUsecase";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 
 export type UpdateUserProfilePictureInput = {

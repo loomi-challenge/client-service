@@ -1,5 +1,5 @@
 import { IUserGateway } from "@/domain/gateways/user.gateway";
-import { IUseCase } from "../usecase";
+import { IUseCase } from "../IUsecase";
 import { User } from "@/domain/entities/User";
 
 export class FindUserUsecase implements IUseCase<string, User | null> {
