@@ -10,7 +10,18 @@ export class UserRepository implements IUserGateway {
         id,
       },
     });
-    return user;
+    
+    if (!user) {
+      return null;
+    }
+    
+    return new User({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      address: user.address || undefined,
+      profilePicture: user.profilePicture || undefined,
+    });
   }
 
   async updateUserPartial(id: string, updates: Partial<IUser>): Promise<User> {
@@ -18,9 +29,21 @@ export class UserRepository implements IUserGateway {
       where: {
         id,
       },
-      data: updates,
+      data: {
+        name: updates.name,
+        email: updates.email,
+        address: updates.address,
+        profilePicture: updates.profilePicture,
+      },
     });
-    return user;
+    
+    return new User({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      address: user.address || undefined,
+      profilePicture: user.profilePicture || undefined,
+    });
   }
 
   async updateUserProfilePicture(
@@ -31,6 +54,13 @@ export class UserRepository implements IUserGateway {
       where: { id },
       data: { profilePicture },
     });
-    return user;
+    
+    return new User({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      address: user.address || undefined,
+      profilePicture: user.profilePicture || undefined,
+    });
   }
 }

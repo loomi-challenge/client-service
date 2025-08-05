@@ -6,9 +6,7 @@ type UpdateUserParams = {
   id: string;
 };
 
-type UpdateUserBody = {
-  updates: Partial<IUser>;
-};
+type UpdateUserBody =  Partial<IUser>;
 
 type UpdateUserControllerInput = ControllerInput<
   UpdateUserParams,
@@ -26,8 +24,7 @@ export class UpdateUserController
 
   async handle(input: UpdateUserControllerInput): Promise<ControllerOutput> {
     const { id } = input.params;
-    const { updates } = input.body;
-
+    const updates = input.body;
     await this.updateUserUsecase.execute({ id, updates });
 
     return {
