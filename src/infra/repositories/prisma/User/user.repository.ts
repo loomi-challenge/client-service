@@ -9,18 +9,26 @@ export class UserRepository implements IUserGateway {
       where: {
         id,
       },
+      include: {
+        bankingDetails: true,
+      },
     });
-    
+
     if (!user) {
       return null;
     }
-    
+
     return new User({
       id: user.id,
       name: user.name,
       email: user.email,
       address: user.address || undefined,
       profilePicture: user.profilePicture || undefined,
+      bankingDetails: user.bankingDetails ? {
+        agency: user.bankingDetails.agency,
+        accountNumber: user.bankingDetails.account,
+        balance: user.bankingDetails.balance,
+      } : undefined,
     });
   }
 
@@ -36,7 +44,7 @@ export class UserRepository implements IUserGateway {
         profilePicture: updates.profilePicture,
       },
     });
-    
+
     return new User({
       id: user.id,
       name: user.name,
@@ -54,13 +62,41 @@ export class UserRepository implements IUserGateway {
       where: { id },
       data: { profilePicture },
     });
-    
+
     return new User({
       id: user.id,
       name: user.name,
       email: user.email,
       address: user.address || undefined,
       profilePicture: user.profilePicture || undefined,
+    });
+  }
+
+  async updateUserBankingBalance({
+    id,
+    amount,
+    type,
+  }: {
+    id: string;
+    amount: number;
+    type: "in" | "out";
+  }): Promise<void> {
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: { bankingDetails: true },
+    });
+
+    if (!user?.bankingDetails) {
+      throw new Error("User has no banking details");
+    }
+
+    await prisma.bankingDetails.update({
+      where: { id: user.bankingDetails.id },
+      data: {
+        balance: {
+          [type === "in" ? "increment" : "decrement"]: amount,
+        },
+      },
     });
   }
 }

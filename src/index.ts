@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { userRouter } from "./infra/http/routes/User/route";
 import { startConsumer } from "./infra/rabbitmq/user-validation";
+import { startTransactionConsumer } from "./infra/rabbitmq/user-balance";
 
 dotenv.config();
 
@@ -18,6 +19,9 @@ app.listen(port, () => {
   console.log(`📝 Environment: ${process.env.NODE_ENV || "development"}`);
   console.log(`🌐 Access the API at: http://localhost:${port}`);
   startConsumer().catch((err) => {
+    console.error("❌ Erro ao iniciar o consumer:", err);
+  });
+  startTransactionConsumer().catch((err) => {
     console.error("❌ Erro ao iniciar o consumer:", err);
   });
 });

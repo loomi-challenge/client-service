@@ -5,4 +5,13 @@ export interface IUserGateway {
   findUserById(id: string): Promise<User | null>;
   updateUserPartial(id: string, updates: Partial<IUser>): Promise<User>;
   updateUserProfilePicture(id: string, profilePicture: string): Promise<User>;
+  updateUserBankingBalance({
+    id,
+    amount,
+    type,
+  }: {
+    id: string;
+    amount: number;
+    type: "in" | "out";
+  }): Promise<void>;
 }

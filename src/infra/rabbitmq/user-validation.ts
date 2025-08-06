@@ -83,4 +83,4 @@ export async function startConsumer() {
   });
 }
 
-startConsumer();
+;

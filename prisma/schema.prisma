@@ -14,20 +14,23 @@ datasource db {
 }
 
 model User {
-  id               String          @id @default(uuid())
-  name             String
-  email            String          @unique
-  address          String?
-  profilePicture   String?
-  bankingDetails   BankingDetails? @relation(fields: [bankingDetailsId], references: [id])
-  bankingDetailsId String?         @unique
-  createdAt        DateTime        @default(now())
-  updatedAt        DateTime        @updatedAt
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  address        String?
+  profilePicture String?
+  bankingDetails BankingDetails?
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model BankingDetails {
   id      String @id @default(uuid())
   agency  String
   account String
-  user    User?  @relation
+  balance Float  @default(500)
+
+  user    User   @relation(fields: [userId], references: [id])
+  userId  String @unique
 }
