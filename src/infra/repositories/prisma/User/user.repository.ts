@@ -10,11 +10,11 @@ export class UserRepository implements IUserGateway {
         id,
       },
     });
-    
+
     if (!user) {
       return null;
     }
-    
+
     return new User({
       id: user.id,
       name: user.name,
@@ -36,7 +36,7 @@ export class UserRepository implements IUserGateway {
         profilePicture: updates.profilePicture,
       },
     });
-    
+
     return new User({
       id: user.id,
       name: user.name,
@@ -54,13 +54,41 @@ export class UserRepository implements IUserGateway {
       where: { id },
       data: { profilePicture },
     });
-    
+
     return new User({
       id: user.id,
       name: user.name,
       email: user.email,
       address: user.address || undefined,
       profilePicture: user.profilePicture || undefined,
+    });
+  }
+
+  async updateUserBankingBalance({
+    id,
+    amount,
+    type,
+  }: {
+    id: string;
+    amount: number;
+    type: "in" | "out";
+  }): Promise<void> {
+    const user = await prisma.user.findUnique({
+      where: { id },
+      select: { bankingDetailsId: true },
+    });
+
+    if (!user?.bankingDetailsId) {
+      throw new Error("User has no banking details");
+    }
+
+    await prisma.bankingDetails.update({
+      where: { id: user.bankingDetailsId },
+      data: {
+        balance: {
+          [type]: amount,
+        },
+      },
     });
   }
 }

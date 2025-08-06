@@ -29,5 +29,6 @@ model BankingDetails {
   id      String @id @default(uuid())
   agency  String
   account String
+  balance Float  @default(500)
   user    User?  @relation
 }
