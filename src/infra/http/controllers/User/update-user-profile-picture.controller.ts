@@ -1,12 +1,13 @@
 import { IController, ControllerInput, ControllerOutput } from "../IController";
 import { UpdateUserProfilePictureUsecase } from "@/application/usecases/User/update-user-profile-picture.usecase";
+import { File } from "@/shared/types/file.types";
 
 type UpdateUserProfilePictureParams = {
   id: string;
 };
 
 type UpdateUserProfilePictureBody = {
-  profilePicture: string;
+  profilePicture: File;
 };
 
 type UpdateUserProfilePictureControllerInput = ControllerInput<
@@ -31,7 +32,7 @@ export class UpdateUserProfilePictureController
   ): Promise<ControllerOutput> {
     const { id } = input.params;
     const { profilePicture } = input.body;
-
+    console.log("profilePicture", input);
     await this.updateUserProfilePictureUsecase.execute({
       id,
       profilePicture,
