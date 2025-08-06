@@ -9,6 +9,9 @@ export class UserRepository implements IUserGateway {
       where: {
         id,
       },
+      include: {
+        bankingDetails: true,
+      },
     });
 
     if (!user) {
@@ -21,6 +24,11 @@ export class UserRepository implements IUserGateway {
       email: user.email,
       address: user.address || undefined,
       profilePicture: user.profilePicture || undefined,
+      bankingDetails: user.bankingDetails ? {
+        agency: user.bankingDetails.agency,
+        accountNumber: user.bankingDetails.account,
+        balance: user.bankingDetails.balance,
+      } : undefined,
     });
   }
 
@@ -75,18 +83,18 @@ export class UserRepository implements IUserGateway {
   }): Promise<void> {
     const user = await prisma.user.findUnique({
       where: { id },
-      select: { bankingDetailsId: true },
+      select: { bankingDetails: true },
     });
 
-    if (!user?.bankingDetailsId) {
+    if (!user?.bankingDetails) {
       throw new Error("User has no banking details");
     }
 
     await prisma.bankingDetails.update({
-      where: { id: user.bankingDetailsId },
+      where: { id: user.bankingDetails.id },
       data: {
         balance: {
-          [type]: amount,
+          [type === "in" ? "increment" : "decrement"]: amount,
         },
       },
     });
