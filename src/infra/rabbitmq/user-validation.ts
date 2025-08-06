@@ -22,49 +22,61 @@ export async function startConsumer() {
     console.log("  - CorrelationId:", msg.properties.correlationId);
     console.log("  - ReplyTo:", msg.properties.replyTo);
 
-    const { senderUserId, receiverUserId } = JSON.parse(msg.content.toString());
+    const { userIds } = JSON.parse(msg.content.toString());
     
-    console.log(`🔍 Validando usuários - Sender: ${senderUserId}, Receiver: ${receiverUserId}`);
-
-    let sender = null;
-    let receiver = null;
-    let valid = false;
-
-    try {
-      console.log(`👤 Buscando sender: ${senderUserId}`);
-      sender = await findUserUsecase.execute(senderUserId);
-      console.log(`✅ Sender encontrado: ${sender ? 'SIM' : 'NÃO'}`);
-    } catch (error) {
-      console.log(`❌ Erro ao buscar sender: ${(error as Error).message}`);
-    }
-
-    try {
-      console.log(`👤 Buscando receiver: ${receiverUserId}`);
-      receiver = await findUserUsecase.execute(receiverUserId);
-      console.log(`✅ Receiver encontrado: ${receiver ? 'SIM' : 'NÃO'}`);
-    } catch (error) {
-      console.log(`❌ Erro ao buscar receiver: ${(error as Error).message}`);
-    }
-
-    valid = !!sender && !!receiver;
-
-    if (!valid) {
-      if (!sender) console.log(`❌ Sender ${senderUserId} não encontrado`);
-      if (!receiver) console.log(`❌ Receiver ${receiverUserId} não encontrado`);
+    if (!Array.isArray(userIds)) {
+      console.log("❌ Formato inválido: esperado array de userIds");
       return channel.nack(msg, false, false);
     }
     
-    console.log(`✅ Validação final: ${valid ? 'VÁLIDA' : 'INVÁLIDA'}`);
+    console.log(`🔍 Validando ${userIds.length} usuários: [${userIds.join(', ')}]`);
+
+    const validationResults = [];
+    let allValid = true;
+
+    for (const userId of userIds) {
+      let user = null;
+      let isValid = false;
+
+      try {
+        console.log(`👤 Buscando usuário: ${userId}`);
+        user = await findUserUsecase.execute(userId);
+        isValid = !!user;
+        console.log(`${isValid ? '✅' : '❌'} Usuário ${userId}: ${isValid ? 'ENCONTRADO' : 'NÃO ENCONTRADO'}`);
+      } catch (error) {
+        console.log(`❌ Erro ao buscar usuário ${userId}: ${(error as Error).message}`);
+        isValid = false;
+      }
+
+      validationResults.push({
+        userId,
+        valid: isValid
+      });
+
+      if (!isValid) {
+        allValid = false;
+      }
+    }
+
+    console.log(`✅ Validação final: ${allValid ? 'TODOS VÁLIDOS' : 'ALGUNS INVÁLIDOS'}`);
+    
+    const response = {
+      allValid,
+      results: validationResults,
+      totalUsers: userIds.length,
+      validUsers: validationResults.filter(r => r.valid).length
+    };
     
     channel.sendToQueue(
       msg.properties.replyTo,
-      Buffer.from(JSON.stringify({ valid })),
+      Buffer.from(JSON.stringify(response)),
       {
         correlationId: msg.properties.correlationId,
       }
     );
 
     console.log(`📤 Resposta enviada para: ${msg.properties.replyTo}`);
+    console.log(`📊 Resultado: ${response.validUsers}/${response.totalUsers} usuários válidos`);
     console.log("─".repeat(50));
 
     channel.ack(msg);
