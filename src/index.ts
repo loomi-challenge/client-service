@@ -1,21 +1,19 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import dotenv from "dotenv";
+import { userRouter } from "./infra/http/routes/User/route";
+
+
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req: Request, res: Response) => {
-  console.log(req.body);
-  res.json({
-    success: true,
-    message: "Hello World",
-  });
-});
+app.use("/", userRouter);
+
 
 app.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}`);

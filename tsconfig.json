@@ -1,40 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES2022",
+    "target": "es2022",
+    "module": "es2022",
     "moduleResolution": "node",
-    "lib": ["ES2022"],
+    "lib": ["es2022"],
+    "allowJs": false,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": ["*"],
-      "@infra/*": ["infra/*"],
-      "@application/*": ["application/*"],
-      "@usecases/*": ["application/usecases/*"],
-      "@http/*": ["infra/http/*"]
-    },
-    "strict": true,
+    "removeComments": true,
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    "removeComments": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
-    "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "strict": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
-} 
+  "include": ["src/**/*"]
+}
