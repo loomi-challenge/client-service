@@ -99,4 +99,32 @@ export class UserRepository implements IUserGateway {
       },
     });
   }
+
+  async create(userData: User): Promise<User> {
+    const user = await prisma.user.create({
+      data: {
+        id: userData.id,
+        name: userData.name,
+        email: userData.email,
+        address: userData.address,
+        profilePicture: userData.profilePicture,
+      },
+    });
+
+    return new User({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      address: user.address || undefined,
+      profilePicture: user.profilePicture || undefined,
+    });
+  }
+
+  async findUserByEmail(email: string): Promise<User | null> {
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    return user ? new User({ id: user.id, name: user.name, email: user.email }) : null;
+  }
 }
