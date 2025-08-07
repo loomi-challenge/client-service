@@ -1,5 +1,6 @@
 import { IAuthProvider } from "@/application/interfaces/auth-provider";
 import { IUseCase } from "../IUsecase";
+import { inject, injectable } from "tsyringe";
 
 type ResendConfirmationCodeUseCaseInput = {
   username: string;
@@ -11,6 +12,7 @@ type ResendConfirmationCodeUseCaseOutput = {
   status: number;
 };
 
+@injectable()
 export class ResendConfirmationCodeUseCase
   implements
     IUseCase<
@@ -18,7 +20,9 @@ export class ResendConfirmationCodeUseCase
       ResendConfirmationCodeUseCaseOutput
     >
 {
-  constructor(private authProvider: IAuthProvider) {}
+  constructor(
+    @inject("AuthProvider") private authProvider: IAuthProvider
+  ) {}
 
   async execute(
     input: ResendConfirmationCodeUseCaseInput

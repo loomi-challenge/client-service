@@ -1,3 +1,4 @@
+import { inject, injectable } from "tsyringe";
 import { IController, ControllerInput, ControllerOutput } from "../IController";
 import { UpdateUserProfilePictureUsecase } from "@/application/usecases/User/update-user-profile-picture.usecase";
 
@@ -18,11 +19,13 @@ type UpdateUserProfilePictureControllerInput = ControllerInput<
   body: UpdateUserProfilePictureBody;
 };
 
+@injectable()
 export class UpdateUserProfilePictureController
   implements
     IController<UpdateUserProfilePictureControllerInput, ControllerOutput>
 {
   constructor(
+    @inject("UpdateUserProfilePictureUsecase")
     private readonly updateUserProfilePictureUsecase: UpdateUserProfilePictureUsecase
   ) {}
 

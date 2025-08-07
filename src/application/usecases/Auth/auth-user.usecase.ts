@@ -1,5 +1,6 @@
 import { IAuthProvider } from "@/application/interfaces/auth-provider";
 import { IUseCase } from "../IUsecase";
+import { inject, injectable } from "tsyringe";
 
 type AuthUserUseCaseInputDto = {
   username: string;
@@ -11,10 +12,13 @@ type AuthUserUseCaseOutputDto = {
   status: number;
 };
 
+@injectable()
 export class AuthUserUseCase
   implements IUseCase<AuthUserUseCaseInputDto, AuthUserUseCaseOutputDto>
 {
-  constructor(private authProvider: IAuthProvider) {}
+  constructor(
+    @inject("AuthProvider") private authProvider: IAuthProvider
+  ) {}
 
   async execute(
     input: AuthUserUseCaseInputDto

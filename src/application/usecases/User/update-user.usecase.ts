@@ -2,6 +2,7 @@ import { User } from "@/domain/entities/User";
 import { IUseCase } from "../IUsecase";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { IUser } from "@/domain/entities/User/interfaces/user.interface";
+import { inject, injectable } from "tsyringe";
 import { IUserCacheRepository } from "@/domain/gateways/user-cache.gateway";
 
 export type UpdateUserInput = {
@@ -9,9 +10,11 @@ export type UpdateUserInput = {
   updates: Partial<IUser>;
 };
 
+@injectable()
 export class UpdateUserUsecase implements IUseCase<UpdateUserInput, User> {
   constructor(
-    private readonly userGateway: IUserGateway,
+    @inject("UserGateway") private readonly userGateway: IUserGateway,
+    @inject("UserCacheRepository")
     private readonly userCacheRepository: IUserCacheRepository
   ) {}
 

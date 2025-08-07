@@ -2,7 +2,9 @@ import { IUser } from "@/domain/entities/User/interfaces/user.interface";
 import { IUserCacheRepository } from "@/domain/gateways/user-cache.gateway";
 import { User } from "@/domain/entities/User";
 import redis from "@/infra/redis/redis-client";
+import { injectable } from "tsyringe";
 
+@injectable()
 export class UserCacheRepository implements IUserCacheRepository {
   private readonly CACHE_KEY_PREFIX = "user:";
   private readonly ttl = 60 * 5; 

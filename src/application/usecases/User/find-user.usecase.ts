@@ -1,11 +1,14 @@
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { IUseCase } from "../IUsecase";
 import { User } from "@/domain/entities/User";
+import { inject, injectable } from "tsyringe";
 import { IUserCacheRepository } from "@/domain/gateways/user-cache.gateway";
 
+@injectable()
 export class FindUserUsecase implements IUseCase<string, User | null> {
   constructor(
-    private readonly userGateway: IUserGateway,
+    @inject("UserGateway") private readonly userGateway: IUserGateway,
+    @inject("UserCacheRepository")
     private readonly userCacheRepository: IUserCacheRepository
   ) {}
 

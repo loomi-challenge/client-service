@@ -1,5 +1,6 @@
 import { IAuthProvider } from "@/application/interfaces/auth-provider";
 import { IUseCase } from "../IUsecase";
+import { inject, injectable } from "tsyringe";
 
 type ConfirmUserUseCaseInput = {
   username: string;
@@ -12,10 +13,13 @@ type ConfirmUserUseCaseOutput = {
   status: number;
 };
 
+@injectable()
 export class ConfirmUserUseCase
   implements IUseCase<ConfirmUserUseCaseInput, ConfirmUserUseCaseOutput>
 {
-  constructor(private authProvider: IAuthProvider) {}
+  constructor(
+    @inject("AuthProvider") private authProvider: IAuthProvider
+  ) {}
 
   async execute(
     input: ConfirmUserUseCaseInput

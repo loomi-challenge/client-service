@@ -2,6 +2,7 @@ import { IUseCase } from "../IUsecase";
 import { IAuthProvider } from "@/application/interfaces/auth-provider";
 import { User } from "@/domain/entities/User";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
+import { inject, injectable } from "tsyringe";
 
 export interface CreateUserUseCaseInputDto {
   email: string;
@@ -21,12 +22,13 @@ export interface CreateTranferUseCaseOutPutDto {
   status: number;
 }
 
+@injectable()
 export class CreateUserUseCase
   implements IUseCase<CreateUserUseCaseInputDto, CreateTranferUseCaseOutPutDto>
 {
   constructor(
-    private authProvider: IAuthProvider,
-    private userRepository: IUserGateway
+    @inject("AuthProvider") private authProvider: IAuthProvider,
+    @inject("UserGateway") private userRepository: IUserGateway
   ) {}
 
   public async execute(

@@ -1,6 +1,7 @@
 import { UpdateUserUsecase } from "@/application/usecases/User/update-user.usecase";
 import { IController, ControllerInput, ControllerOutput } from "../IController";
 import { IUser } from "@/domain/entities/User/interfaces/user.interface";
+import { inject, injectable } from "tsyringe";
 
 type UpdateUserParams = {
   id: string;
@@ -17,10 +18,14 @@ type UpdateUserControllerInput = ControllerInput<
   body: UpdateUserBody;
 };
 
+@injectable()
 export class UpdateUserController
   implements IController<UpdateUserControllerInput, ControllerOutput>
 {
-  constructor(private readonly updateUserUsecase: UpdateUserUsecase) {}
+  constructor(
+    @inject("UpdateUserUsecase")
+    private readonly updateUserUsecase: UpdateUserUsecase
+  ) {}
 
   async handle(input: UpdateUserControllerInput): Promise<ControllerOutput> {
     const { id } = input.params;

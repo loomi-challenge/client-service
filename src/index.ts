@@ -1,3 +1,5 @@
+import "reflect-metadata";
+import "./infra/config/container";
 import express from "express";
 import dotenv from "dotenv";
 import { userRouter } from "./infra/http/routes/User/route";

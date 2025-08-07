@@ -2,7 +2,9 @@ import { User } from "@/domain/entities/User";
 import { IUser } from "@/domain/entities/User/interfaces/user.interface";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { prisma } from "@/package/prisma";
+import { injectable } from "tsyringe";
 
+@injectable()
 export class UserRepository implements IUserGateway {
   async findUserById(id: string): Promise<User | null> {
     const user = await prisma.user.findUnique({
