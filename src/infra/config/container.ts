@@ -9,6 +9,7 @@ import { ConfirmUserUseCase } from "@/application/usecases/Auth/confirm-user.use
 import { CreateUserUseCase } from "@/application/usecases/Auth/create-user.usecase";
 import { ResendConfirmationCodeUseCase } from "@/application/usecases/Auth/resend-confirmation-code.usecase";
 import { CognitoAuthProvider } from "../auth/cognito-auth-provider";
+import { UserCacheRepository } from "../repositories/cache/User/user-cache.repository";
 
 // User
 
@@ -26,6 +27,10 @@ container.register("UpdateUserUsecase", {
 
 container.register("UpdateUserProfilePictureUsecase", {
   useClass: UpdateUserProfilePictureUsecase,
+});
+
+container.register("UserCacheRepository", {
+  useClass: UserCacheRepository,
 });
 
 // Auth
