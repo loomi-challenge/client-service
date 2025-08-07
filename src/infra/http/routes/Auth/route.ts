@@ -9,6 +9,8 @@ import { ConfirmUserController } from "../../controllers/Auth/confirm-user.contr
 import { ConfirmUserUseCase } from "@/application/usecases/Auth/confirm-user.usecase";
 import { UserRepository } from "@/infra/repositories/prisma/User/user.repository";
 import { CognitoAuthProvider } from "@/infra/auth/cognito-auth-provider";
+import { ResendConfirmationCodeController } from "../../controllers/Auth/resend-confirmation-code.controller";
+import { ResendConfirmationCodeUseCase } from "@/application/usecases/Auth/resend-confirmation-code.usecase";
 
 export const authRouter = Router();
 
@@ -21,7 +23,14 @@ const authUserUseCase = new AuthUserUseCase(authProvider);
 const authUserController = new AuthUserController(authUserUseCase);
 const confirmUserUseCase = new ConfirmUserUseCase(authProvider);
 const confirmUserController = new ConfirmUserController(confirmUserUseCase);
+const resendConfirmationCodeUseCase = new ResendConfirmationCodeUseCase(
+  authProvider
+);
+const resendConfirmationCodeController = new ResendConfirmationCodeController(
+  resendConfirmationCodeUseCase
+);
 
 authRouter.post("/login", expressAdaptRoute(authUserController));
 authRouter.post("/register", expressAdaptRoute(createUserController));
 authRouter.post("/confirm-user", expressAdaptRoute(confirmUserController));
+authRouter.post("/resend-confirmation-code", expressAdaptRoute(resendConfirmationCodeController));
