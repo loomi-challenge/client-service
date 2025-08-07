@@ -88,6 +88,7 @@ export class CognitoAuthProvider implements IAuthProvider {
     const params: ResendConfirmationCodeCommandInput = {
       ClientId: this.clientId,
       Username: email,
+      SecretHash: this.calculateSecretHash(email),
     };
     const data: ResendConfirmationCodeCommandOutput = await cognitoClient.send(
       new ResendConfirmationCodeCommand(params)
