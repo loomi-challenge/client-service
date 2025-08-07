@@ -7,10 +7,15 @@ import { FindUserUsecase } from "@/application/usecases/User/find-user.usecase";
 import { UpdateUserUsecase } from "@/application/usecases/User/update-user.usecase";
 import { UpdateUserProfilePictureController } from "../../controllers/User/update-user-profile-picture.controller";
 import { UpdateUserProfilePictureUsecase } from "@/application/usecases/User/update-user-profile-picture.usecase";
+import { UserCacheRepository } from "@/infra/repositories/cache/User/user-cache.repository";
 
 export const userRouter = Router();
 const userRepository = new UserRepository();
-const findUserUseCase = new FindUserUsecase(userRepository);
+const userCacheRepository = new UserCacheRepository();
+const findUserUseCase = new FindUserUsecase(
+  userRepository,
+  userCacheRepository
+);
 const updateUserUseCase = new UpdateUserUsecase(userRepository);
 const updateUserProfilePictureUseCase = new UpdateUserProfilePictureUsecase(
   userRepository
@@ -27,4 +32,3 @@ userRouter.patch(
   "/:id/profile-picture",
   expressAdaptRoute(updateUserProfilePictureController)
 );
-
