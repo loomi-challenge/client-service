@@ -2,6 +2,7 @@ import { User } from "@/domain/entities/User";
 import { IUseCase } from "../IUsecase";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { IUser } from "@/domain/entities/User/interfaces/user.interface";
+import { IUserCacheRepository } from "@/domain/gateways/user-cache.gateway";
 
 export type UpdateUserInput = {
   id: string;
@@ -9,12 +10,19 @@ export type UpdateUserInput = {
 };
 
 export class UpdateUserUsecase implements IUseCase<UpdateUserInput, User> {
-  constructor(private readonly userGateway: IUserGateway) {}
+  constructor(
+    private readonly userGateway: IUserGateway,
+    private readonly userCacheRepository: IUserCacheRepository
+  ) {}
 
-  async execute(input: UpdateUserInput) {
+  async execute(input: UpdateUserInput): Promise<User> {
     await this.validateUser(input.id);
     await this.validateUpdates(input.updates);
-    return this.userGateway.updateUserPartial(input.id, input.updates);
+    
+    const updatedUser = await this.userGateway.updateUserPartial(input.id, input.updates);
+    await this.userCacheRepository.invalidateUserCache(input.id);
+    
+    return updatedUser;
   }
 
   private async validateUser(id: string) {

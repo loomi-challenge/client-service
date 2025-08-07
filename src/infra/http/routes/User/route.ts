@@ -16,9 +16,13 @@ const findUserUseCase = new FindUserUsecase(
   userRepository,
   userCacheRepository
 );
-const updateUserUseCase = new UpdateUserUsecase(userRepository);
+const updateUserUseCase = new UpdateUserUsecase(
+  userRepository,
+  userCacheRepository
+);
 const updateUserProfilePictureUseCase = new UpdateUserProfilePictureUsecase(
-  userRepository
+  userRepository,
+  userCacheRepository
 );
 
 const findUserController = new FindUserController(findUserUseCase);
