@@ -2,7 +2,7 @@ import { ConfirmUserUseCase } from "@/application/usecases/Auth/confirm-user.use
 import { IController, ControllerInput, ControllerOutput } from "../IController";
 
 type ConfirmUserBody = {
-  username: string;
+  email: string;
   code: string;
 };
 
@@ -16,8 +16,11 @@ export class ConfirmUserController
   constructor(private confirmUserUseCase: ConfirmUserUseCase) {}
 
   async handle(input: ConfirmUserControllerInput): Promise<ControllerOutput> {
-    const { username, code } = input.body;
-    const data = await this.confirmUserUseCase.execute({ username, code });
+    const { email, code } = input.body;
+    const data = await this.confirmUserUseCase.execute({
+      username: email,
+      code,
+    });
     return {
       statusCode: 200,
       message: "Usuário confirmado com sucesso",

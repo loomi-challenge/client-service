@@ -1,5 +1,4 @@
 import {
-  CreateTranferUseCaseOutPutDto,
   CreateUserUseCase,
   CreateUserUseCaseInputDto,
 } from "@/application/usecases/Auth/create-user.usecase";
