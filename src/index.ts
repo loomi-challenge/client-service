@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import { userRouter } from "./infra/http/routes/User/route";
 import { startConsumer } from "./infra/rabbitmq/user-validation";
 import { startTransactionConsumer } from "./infra/rabbitmq/user-balance";
+import { authRouter } from "./infra/http/routes/Auth/route";
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/", userRouter);
+app.use("/auth", authRouter);
 
 app.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}`);
