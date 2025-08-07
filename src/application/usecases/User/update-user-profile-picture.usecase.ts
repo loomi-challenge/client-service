@@ -1,6 +1,7 @@
 import { User } from "@/domain/entities/User";
 import { IUseCase } from "../IUsecase";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
+import { IUserCacheRepository } from "@/domain/gateways/user-cache.gateway";
 
 export type UpdateUserProfilePictureInput = {
   id: string;
@@ -10,15 +11,20 @@ export type UpdateUserProfilePictureInput = {
 export class UpdateUserProfilePictureUsecase
   implements IUseCase<UpdateUserProfilePictureInput, User>
 {
-  constructor(private readonly userGateway: IUserGateway) {}
+  constructor(
+    private readonly userGateway: IUserGateway,
+    private readonly userCacheRepository: IUserCacheRepository
+  ) {}
 
   async execute(input: UpdateUserProfilePictureInput) {
     await this.validateUser(input.id);
     await this.validateProfilePicture(input.profilePicture);
-    return this.userGateway.updateUserProfilePicture(
+    const updatedUser = await this.userGateway.updateUserProfilePicture(
       input.id,
       input.profilePicture
     );
+    await this.userCacheRepository.invalidateUserCache(input.id);
+    return updatedUser;
   }
 
   private async validateUser(id: string) {
