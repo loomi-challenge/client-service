@@ -2,14 +2,18 @@ import { User } from "@/domain/entities/User";
 import { IUseCase } from "../IUsecase";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { IUser } from "@/domain/entities/User/interfaces/user.interface";
+import { inject, injectable } from "tsyringe";
 
 export type UpdateUserInput = {
   id: string;
   updates: Partial<IUser>;
 };
 
+@injectable()
 export class UpdateUserUsecase implements IUseCase<UpdateUserInput, User> {
-  constructor(private readonly userGateway: IUserGateway) {}
+  constructor(
+    @inject("UserGateway") private readonly userGateway: IUserGateway
+  ) {}
 
   async execute(input: UpdateUserInput) {
     await this.validateUser(input.id);

@@ -20,7 +20,7 @@
       "@/*": ["src/*"]
     },
     "strict": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
   },
   "include": ["src/**/*"]
 }

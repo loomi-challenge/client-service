@@ -1,16 +1,19 @@
 import { User } from "@/domain/entities/User";
 import { IUseCase } from "../IUsecase";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
+import { inject, injectable } from "tsyringe";
 
 export type UpdateUserProfilePictureInput = {
   id: string;
   profilePicture: string;
 };
-
+@injectable()
 export class UpdateUserProfilePictureUsecase
   implements IUseCase<UpdateUserProfilePictureInput, User>
 {
-  constructor(private readonly userGateway: IUserGateway) {}
+  constructor(
+    @inject("UserGateway") private readonly userGateway: IUserGateway
+  ) {}
 
   async execute(input: UpdateUserProfilePictureInput) {
     await this.validateUser(input.id);
