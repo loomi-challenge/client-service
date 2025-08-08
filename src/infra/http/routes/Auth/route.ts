@@ -6,6 +6,9 @@ import { ConfirmUserController } from "../../controllers/Auth/confirm-user.contr
 import { ResendConfirmationCodeController } from "../../controllers/Auth/resend-confirmation-code.controller";
 import { container } from "tsyringe";
 import { validateCreateUser } from "@/infra/validators/zod/create-user.validator";
+import { validateAuthUser } from "@/infra/validators/zod/auth-user.validator";
+import { validateConfirmUser } from "@/infra/validators/zod/confirm-user.validator";
+import { validateResendCode } from "@/infra/validators/zod/resend-code.validator";
 
 export const authRouter = Router();
 
@@ -18,10 +21,23 @@ const resendConfirmationCodeController = container.resolve(
   ResendConfirmationCodeController
 );
 
-authRouter.post("/login", expressAdaptRoute(authUserController));
-authRouter.post("/register", validateCreateUser, expressAdaptRoute(createUserController));
-authRouter.post("/confirm-user", expressAdaptRoute(confirmUserController));
+authRouter.post(
+  "/login",
+  validateAuthUser,
+  expressAdaptRoute(authUserController)
+);
+authRouter.post(
+  "/register",
+  validateCreateUser,
+  expressAdaptRoute(createUserController)
+);
+authRouter.post(
+  "/confirm-user",
+  validateConfirmUser,
+  expressAdaptRoute(confirmUserController)
+);
 authRouter.post(
   "/resend-confirmation-code",
+  validateResendCode,
   expressAdaptRoute(resendConfirmationCodeController)
 );

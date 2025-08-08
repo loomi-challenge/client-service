@@ -43,13 +43,22 @@ export class CognitoAuthProvider implements IAuthProvider {
       },
       ClientId: this.clientId,
     };
-    const data: InitiateAuthCommandOutput = await cognitoClient.send(
-      new InitiateAuthCommand(params)
-    );
-    return {
-      accessToken: data.AuthenticationResult?.AccessToken || "",
-      idToken: data.AuthenticationResult?.IdToken || "",
-    };
+    
+    try {
+      const data: InitiateAuthCommandOutput = await cognitoClient.send(
+        new InitiateAuthCommand(params)
+      );
+
+      return {
+        accessToken: data.AuthenticationResult?.AccessToken || "",
+        idToken: data.AuthenticationResult?.IdToken || "",
+      };
+    } catch (error: any) {
+      if (error.__type === 'NotAuthorizedException' || error.name === 'NotAuthorizedException') {
+        throw new AppError("Credenciais inválidas", 401);
+      }
+      throw error;
+    }
   }
 
   async signUp(email: string, password: string): Promise<any> {
@@ -59,8 +68,22 @@ export class CognitoAuthProvider implements IAuthProvider {
       Username: email,
       SecretHash: this.calculateSecretHash(email),
     };
-    const data = await cognitoClient.send(new SignUpCommand(params));
-    return data;
+    
+    try {
+      const data = await cognitoClient.send(new SignUpCommand(params));
+      return data;
+    } catch (error: any) {
+      if (error.__type === 'UsernameExistsException' || error.name === 'UsernameExistsException') {
+        throw new AppError("Este email já está cadastrado", 409);
+      }
+      if (error.__type === 'InvalidPasswordException' || error.name === 'InvalidPasswordException') {
+        throw new AppError("A senha não atende aos critérios de segurança", 400);
+      }
+      if (error.__type === 'InvalidParameterException' || error.name === 'InvalidParameterException') {
+        throw new AppError("Parâmetros inválidos fornecidos", 400);
+      }
+      throw error;
+    }
   }
 
   async confirmSignUp(
@@ -75,12 +98,20 @@ export class CognitoAuthProvider implements IAuthProvider {
       ConfirmationCode: code,
       SecretHash: this.calculateSecretHash(username),
     };
-    const data: ConfirmSignUpCommandOutput = await cognitoClient.send(
-      new ConfirmSignUpCommand(params)
-    );
-    return {
-      session: data.Session || "",
-    };
+    
+    try {
+      const data: ConfirmSignUpCommandOutput = await cognitoClient.send(
+        new ConfirmSignUpCommand(params)
+      );
+      return {
+        session: data.Session || "",
+      };
+    } catch (error: any) {
+      if (error.__type === 'ExpiredCodeException' || error.name === 'ExpiredCodeException') {
+        throw new AppError("Código de confirmação expirado. Solicite um novo código.", 400);
+      }
+      throw error;
+    }
   }
 
   async resendConfirmationCode(email: string): Promise<{
@@ -91,12 +122,26 @@ export class CognitoAuthProvider implements IAuthProvider {
       Username: email,
       SecretHash: this.calculateSecretHash(email),
     };
-    const data: ResendConfirmationCodeCommandOutput = await cognitoClient.send(
-      new ResendConfirmationCodeCommand(params)
-    );
-    return {
-      data: data.CodeDeliveryDetails,
-    };
+    
+    try {
+      const data: ResendConfirmationCodeCommandOutput = await cognitoClient.send(
+        new ResendConfirmationCodeCommand(params)
+      );
+      return {
+        data: data.CodeDeliveryDetails,
+      };
+    } catch (error: any) {
+      if (error.__type === 'UserNotFoundException' || error.name === 'UserNotFoundException') {
+        throw new AppError("Usuário não encontrado", 404);
+      }
+      if (error.__type === 'LimitExceededException' || error.name === 'LimitExceededException') {
+        throw new AppError("Limite de tentativas excedido. Tente novamente mais tarde.", 429);
+      }
+      if (error.__type === 'InvalidParameterException' || error.name === 'InvalidParameterException') {
+        throw new AppError("Parâmetros inválidos fornecidos", 400);
+      }
+      throw error;
+    }
   }
 
 
