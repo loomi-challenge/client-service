@@ -9,14 +9,14 @@ export function errorMiddleware(
 ) {
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({
-      status: "error",
+      status: err.statusCode,
       message: err.message,
     });
   }
 
   console.error(err);
   return res.status(500).json({
-    status: "error",
+    status: 500,
     message: "Erro interno no servidor",
   });
 }

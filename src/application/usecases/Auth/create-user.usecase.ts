@@ -3,6 +3,7 @@ import { IAuthProvider } from "@/application/interfaces/auth-provider";
 import { User } from "@/domain/entities/User";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { inject, injectable } from "tsyringe";
+import { AppError } from "@/domain/errors/app-error";
 
 export interface CreateUserUseCaseInputDto {
   email: string;
@@ -65,29 +66,29 @@ export class CreateUserUseCase
   private async verifyUserExists(email: string) {
     const user = await this.userRepository.findUserByEmail(email);
     if (user) {
-      throw new Error("Usuário já cadastrado!");
+      throw new AppError("Usuário já cadastrado!", 409);
     }
   }
 
   private async verifyUserPassword(password: string) {
     if (password.length < 8) {
-      throw new Error("A senha deve ter pelo menos 8 caracteres!");
+      throw new AppError("A senha deve ter pelo menos 8 caracteres!", 400);
     }
 
     if (!password.match(/[A-Z]/)) {
-      throw new Error("A senha deve conter pelo menos uma letra maiúscula!");
+      throw new AppError("A senha deve conter pelo menos uma letra maiúscula!", 400);
     }
 
     if (!password.match(/[a-z]/)) {
-      throw new Error("A senha deve conter pelo menos uma letra minúscula!");
+      throw new AppError("A senha deve conter pelo menos uma letra minúscula!", 400);
     }
 
     if (!password.match(/[0-9]/)) {
-      throw new Error("A senha deve conter pelo menos um número!");
+      throw new AppError("A senha deve conter pelo menos um número!", 400);
     }
 
     if (!password.match(/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/)) {
-      throw new Error("A senha deve conter pelo menos um caractere especial!");
+      throw new AppError("A senha deve conter pelo menos um caractere especial!", 400);
     }
   }
 }

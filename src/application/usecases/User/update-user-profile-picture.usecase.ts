@@ -3,6 +3,7 @@ import { IUseCase } from "../IUsecase";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { inject, injectable } from "tsyringe";
 import { IUserCacheRepository } from "@/domain/gateways/user-cache.gateway";
+import { AppError } from "@/domain/errors/app-error";
 
 export type UpdateUserProfilePictureInput = {
   id: string;
@@ -32,14 +33,14 @@ export class UpdateUserProfilePictureUsecase
   private async validateUser(id: string) {
     const user = await this.userGateway.findUserById(id);
     if (!user) {
-      throw new Error("User not found");
+      throw new AppError("Usuário não encontrado", 404);
     }
     return user;
   }
 
   private async validateProfilePicture(profilePicture: string) {
     if (!profilePicture) {
-      throw new Error("Profile picture is required");
+      throw new AppError("Foto de perfil é obrigatória", 400);
     }
     return profilePicture;
   }

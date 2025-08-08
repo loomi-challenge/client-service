@@ -4,6 +4,7 @@ import { User } from "@/domain/entities/User";
 import { inject, injectable } from "tsyringe";
 import { IUserCacheRepository } from "@/domain/gateways/user-cache.gateway";
 import { IUser } from "@/domain/entities/User/interfaces/user.interface";
+import { AppError } from "@/domain/errors/app-error";
 
 
 @injectable()
@@ -25,7 +26,7 @@ export class FindUserUsecase implements IUseCase<string, IUser | null> {
     }
 
     const foundUser = await this.userGateway.findUserById(id);
-    if (!foundUser) throw new Error("User not found");
+    if (!foundUser) throw new AppError("Usuário não encontrado", 404);
 
     const user = new User({
       id: foundUser.id,
