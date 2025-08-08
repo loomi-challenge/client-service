@@ -7,6 +7,7 @@ import { startConsumer } from "./infra/rabbitmq/user-validation";
 import { startTransactionConsumer } from "./infra/rabbitmq/user-balance";
 import { authRouter } from "./infra/http/routes/Auth/route";
 import { startBalanceCheckConsumer } from "./infra/rabbitmq/user-balance-check";
+import { errorMiddleware } from "./infra/http/middlewares/errorMiddleware";
 
 dotenv.config();
 
@@ -18,6 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", userRouter);
 app.use("/auth", authRouter);
+
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(`🚀 Server is running on port ${port}`);
