@@ -32,11 +32,10 @@ export class UpdateUserProfilePictureController
   ): Promise<ControllerOutput> {
     const id = input.headers["x-user-id"] as string;
     const { profilePicture } = input.body;
-    console.log("profilePicture", profilePicture);
-    // await this.updateUserProfilePictureUsecase.execute({
-    //   id,
-    //   profilePicture,
-    // });
+      await this.updateUserProfilePictureUsecase.execute({
+        id,
+        profilePicture,
+      });
 
     return {
       statusCode: 200,

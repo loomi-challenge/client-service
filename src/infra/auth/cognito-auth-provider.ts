@@ -1,4 +1,4 @@
-import { IAuthProvider } from "@/application/interfaces/auth-provider";
+import { IAuthProvider } from "@/domain/providers/auth-provider";
 import { cognitoClient } from "../aws/cognito-client";
 import {
   ConfirmSignUpCommand,

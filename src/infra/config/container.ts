@@ -11,6 +11,7 @@ import { CreateUserUseCase } from "@/application/usecases/Auth/create-user.useca
 import { ResendConfirmationCodeUseCase } from "@/application/usecases/Auth/resend-confirmation-code.usecase";
 import { CognitoAuthProvider } from "../auth/cognito-auth-provider";
 import { UserCacheRepository } from "../repositories/cache/User/user-cache.repository";
+import { S3StorageRepository } from "../repositories/storage/s3-storage.repository";
 
 // User
 
@@ -57,6 +58,11 @@ container.register("CreateUserUseCase", {
 
 container.register("ResendConfirmationCodeUseCase", {
   useClass: ResendConfirmationCodeUseCase,
+});
+
+// Storage
+container.register("StorageProvider", {
+  useClass: S3StorageRepository,
 });
 
 export { container };
