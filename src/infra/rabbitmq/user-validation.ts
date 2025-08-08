@@ -6,7 +6,8 @@ import { UserCacheRepository } from "../repositories/cache/User/user-cache.repos
 export async function startConsumer() {
   console.log("🐰 Iniciando consumer de validação de usuários...");
 
-  const conn = await amqp.connect("amqp://localhost");
+  const rabbitmqUrl = process.env.RABBITMQ_URL || "amqp://localhost";
+  const conn = await amqp.connect(rabbitmqUrl);
   const channel = await conn.createChannel();
   const queue = "validate-users";
   const findUserUsecase = new FindUserUsecase(

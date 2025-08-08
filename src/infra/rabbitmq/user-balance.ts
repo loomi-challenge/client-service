@@ -6,7 +6,8 @@ import { UserCacheRepository } from "../repositories/cache/User/user-cache.repos
 export async function startTransactionConsumer() {
   console.log("🐰 Iniciando consumer de transações...");
 
-  const conn = await amqp.connect("amqp://localhost");
+  const rabbitmqUrl = process.env.RABBITMQ_URL || "amqp://localhost";
+  const conn = await amqp.connect(rabbitmqUrl);
   const channel = await conn.createChannel();
   const queue = "new-transactions";
   const updateUserBalanceUsecase = new UpdateUserBalanceUsecase(

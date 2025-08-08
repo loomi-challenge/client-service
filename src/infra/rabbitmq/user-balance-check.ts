@@ -5,7 +5,8 @@ import { container } from "tsyringe";
 export async function startBalanceCheckConsumer() {
   console.log("🐰 Iniciando consumer de verificação de saldo...");
 
-  const conn = await amqp.connect("amqp://localhost");
+  const rabbitmqUrl = process.env.RABBITMQ_URL || "amqp://localhost";
+  const conn = await amqp.connect(rabbitmqUrl);
   const channel = await conn.createChannel();
   const queue = "check-balance";
   
