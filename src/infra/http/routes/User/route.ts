@@ -4,6 +4,8 @@ import { UpdateUserController } from "../../controllers/User/update-user.control
 import { expressAdaptRoute } from "../../adapters/express";
 import { UpdateUserProfilePictureController } from "../../controllers/User/update-user-profile-picture.controller";
 import { container } from "../../../config/container";
+import { validateUpdateUser } from "@/infra/validators/zod/update-user.validator";
+import { validateUpdateUserProfilePicture } from "@/infra/validators/zod/update-profile-picture.validator";
 
 export const userRouter = Router();
 
@@ -14,8 +16,13 @@ const updateUserProfilePictureController = container.resolve(
 );
 
 userRouter.get("/", expressAdaptRoute(findUserController));
-userRouter.patch("/", expressAdaptRoute(updateUserController));
+userRouter.patch(
+  "/",
+  validateUpdateUser,
+  expressAdaptRoute(updateUserController)
+);
 userRouter.patch(
   "/profile-picture",
+  validateUpdateUserProfilePicture,
   expressAdaptRoute(updateUserProfilePictureController)
 );
