@@ -32,15 +32,17 @@ export class UpdateUserProfilePictureController
   ): Promise<ControllerOutput> {
     const id = input.headers["x-user-id"] as string;
     const { profilePicture } = input.body;
-      await this.updateUserProfilePictureUsecase.execute({
-        id,
-        profilePicture,
-      });
+    const updatedUser = await this.updateUserProfilePictureUsecase.execute({
+      id,
+      profilePicture,
+    });
 
     return {
       statusCode: 200,
       message: "Foto de perfil atualizada com sucesso",
-      data: undefined,
+      data: {
+        profilePictureUrl: updatedUser.profilePicture
+      },
     };
   }
 }
