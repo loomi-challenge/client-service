@@ -4,6 +4,7 @@ import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { FindUserUsecase } from "@/application/usecases/User/find-user.usecase";
 import { UpdateUserProfilePictureUsecase } from "@/application/usecases/User/update-user-profile-picture.usecase";
 import { UpdateUserUsecase } from "@/application/usecases/User/update-user.usecase";
+import { CheckUserBalanceUsecase } from "@/application/usecases/User/check-user-balance.usecase";
 import { AuthUserUseCase } from "@/application/usecases/Auth/auth-user.usecase";
 import { ConfirmUserUseCase } from "@/application/usecases/Auth/confirm-user.usecase";
 import { CreateUserUseCase } from "@/application/usecases/Auth/create-user.usecase";
@@ -27,6 +28,10 @@ container.register("UpdateUserUsecase", {
 
 container.register("UpdateUserProfilePictureUsecase", {
   useClass: UpdateUserProfilePictureUsecase,
+});
+
+container.register("CheckUserBalanceUsecase", {
+  useClass: CheckUserBalanceUsecase,
 });
 
 container.register("UserCacheRepository", {

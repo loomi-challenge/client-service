@@ -1,7 +1,6 @@
 import amqp from "amqplib";
-import { FindUserUsecase } from "@/application/usecases/User/find-user.usecase";
-import { UserRepository } from "../repositories/prisma/User/user.repository";
-import { UserCacheRepository } from "../repositories/cache/User/user-cache.repository";
+import { CheckUserBalanceUsecase } from "@/application/usecases/User/check-user-balance.usecase";
+import { container } from "tsyringe";
 
 export async function startBalanceCheckConsumer() {
   console.log("🐰 Iniciando consumer de verificação de saldo...");
@@ -9,10 +8,8 @@ export async function startBalanceCheckConsumer() {
   const conn = await amqp.connect("amqp://localhost");
   const channel = await conn.createChannel();
   const queue = "check-balance";
-  const findUserUsecase = new FindUserUsecase(
-    new UserRepository(),
-    new UserCacheRepository()
-  );
+  
+  const checkUserBalanceUsecase = container.resolve(CheckUserBalanceUsecase);
 
   await channel.assertQueue(queue);
 
@@ -40,53 +37,33 @@ export async function startBalanceCheckConsumer() {
         `💰 Verificando saldo do usuário ${senderUserId} para transação de ${amount}`
       );
 
-      let user = null;
-      let hasSufficientBalance = false;
-      let currentBalance = 0;
-      let errorMessage = null;
+      const result = await checkUserBalanceUsecase.execute({
+        userId: senderUserId,
+        amount: amount,
+      });
 
-      try {
-        console.log(`👤 Buscando usuário: ${senderUserId}`);
-        user = await findUserUsecase.execute(senderUserId);
-
-        if (!user) {
-          console.log(`❌ Usuário ${senderUserId}: NÃO ENCONTRADO`);
-          errorMessage = "Usuário não encontrado";
-        } else {
-          currentBalance = user.bankingDetails?.balance || 0;
-          hasSufficientBalance = currentBalance >= amount;
-
-          console.log(
-            `${hasSufficientBalance ? "✅" : "❌"} Usuário ${senderUserId}: ${
-              hasSufficientBalance
-                ? `SALDO SUFICIENTE (${currentBalance} >= ${amount})`
-                : `SALDO INSUFICIENTE (${currentBalance} < ${amount})`
-            }`
-          );
-        }
-      } catch (error) {
-        console.log(
-          `❌ Erro ao buscar usuário ${senderUserId}: ${
-            (error as Error).message
-          }`
-        );
-        errorMessage = `Erro ao buscar usuário: ${(error as Error).message}`;
-      }
+      console.log(
+        `${result.hasSufficientBalance ? "✅" : "❌"} Usuário ${senderUserId}: ${
+          result.hasSufficientBalance
+            ? `SALDO SUFICIENTE (${result.currentBalance} >= ${amount})`
+            : `SALDO INSUFICIENTE (${result.currentBalance} < ${amount})`
+        }${result.errorMessage ? ` - ${result.errorMessage}` : ""}`
+      );
 
       const response = {
-        hasSufficientBalance,
-        currentBalance,
-        requiredAmount: amount,
-        senderUserId,
-        userExists: !!user,
-        errorMessage,
+        hasSufficientBalance: result.hasSufficientBalance,
+        currentBalance: result.currentBalance,
+        requiredAmount: result.requiredAmount,
+        senderUserId: result.userId,
+        userExists: result.userExists,
+        errorMessage: result.errorMessage,
       };
 
       console.log(
-        `${hasSufficientBalance ? "✅" : "❌"} Verificação final: ${
-          hasSufficientBalance
+        `${result.hasSufficientBalance ? "✅" : "❌"} Verificação final: ${
+          result.hasSufficientBalance
             ? `SALDO SUFICIENTE`
-            : `SALDO INSUFICIENTE${errorMessage ? ` (${errorMessage})` : ""}`
+            : `SALDO INSUFICIENTE${result.errorMessage ? ` (${result.errorMessage})` : ""}`
         }`
       );
 
@@ -100,9 +77,9 @@ export async function startBalanceCheckConsumer() {
 
       console.log(`📤 Resposta enviada para: ${msg.properties.replyTo}`);
       console.log(
-        `📊 Resultado: Saldo ${currentBalance} ${
-          hasSufficientBalance ? ">=" : "<"
-        } ${amount} (${hasSufficientBalance ? "APROVADO" : "REJEITADO"})`
+        `📊 Resultado: Saldo ${result.currentBalance} ${
+          result.hasSufficientBalance ? ">=" : "<"
+        } ${amount} (${result.hasSufficientBalance ? "APROVADO" : "REJEITADO"})`
       );
       console.log("─".repeat(50));
 
