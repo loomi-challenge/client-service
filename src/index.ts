@@ -6,6 +6,7 @@ import { userRouter } from "./infra/http/routes/User/route";
 import { startConsumer } from "./infra/rabbitmq/user-validation";
 import { startTransactionConsumer } from "./infra/rabbitmq/user-balance";
 import { authRouter } from "./infra/http/routes/Auth/route";
+import { startBalanceCheckConsumer } from "./infra/rabbitmq/user-balance-check";
 
 dotenv.config();
 
@@ -26,6 +27,9 @@ app.listen(port, () => {
     console.error("❌ Erro ao iniciar o consumer:", err);
   });
   startTransactionConsumer().catch((err) => {
+    console.error("❌ Erro ao iniciar o consumer:", err);
+  });
+  startBalanceCheckConsumer().catch((err) => {
     console.error("❌ Erro ao iniciar o consumer:", err);
   });
 });
