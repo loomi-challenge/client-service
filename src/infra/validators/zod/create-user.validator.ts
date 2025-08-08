@@ -1,7 +1,7 @@
-// src/infra/http/validators/create-transaction.validator.ts
 import { z } from "zod";
 import { AppError } from "@/domain/errors/app-error";
 import { NextFunction, Request, Response } from "express";
+
 export const createUserSchema = z.object({
   email: z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, { message: "Email inválido" }),
   password: z.string()
