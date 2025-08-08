@@ -10,6 +10,7 @@ import { authRouter } from "./infra/http/routes/Auth/route";
 import { startBalanceCheckConsumer } from "./infra/rabbitmq/user-balance-check";
 import { errorMiddleware } from "./infra/http/middlewares/errorMiddleware";
 
+
 dotenv.config();
 
 const app = express();

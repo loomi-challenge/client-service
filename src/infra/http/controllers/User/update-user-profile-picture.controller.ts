@@ -4,7 +4,7 @@ import { UpdateUserProfilePictureUsecase } from "@/application/usecases/User/upd
 
 
 type UpdateUserProfilePictureBody = {
-  profilePicture: string;
+  profilePicture: Express.Multer.File; 
 };
 
 type UpdateUserProfilePictureControllerInput = ControllerInput<
@@ -32,11 +32,11 @@ export class UpdateUserProfilePictureController
   ): Promise<ControllerOutput> {
     const id = input.headers["x-user-id"] as string;
     const { profilePicture } = input.body;
-
-    await this.updateUserProfilePictureUsecase.execute({
-      id,
-      profilePicture,
-    });
+    console.log("profilePicture", profilePicture);
+    // await this.updateUserProfilePictureUsecase.execute({
+    //   id,
+    //   profilePicture,
+    // });
 
     return {
       statusCode: 200,
