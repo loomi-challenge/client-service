@@ -1,5 +1,5 @@
 import { IUseCase } from "../IUsecase";
-import { IAuthProvider } from "@/application/interfaces/auth-provider";
+import { IAuthProvider } from "@/domain/providers/auth-provider";
 import { User } from "@/domain/entities/User";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { inject, injectable } from "tsyringe";

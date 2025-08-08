@@ -5,7 +5,7 @@ import { expressAdaptRoute } from "../../adapters/express";
 import { UpdateUserProfilePictureController } from "../../controllers/User/update-user-profile-picture.controller";
 import { container } from "../../../config/container";
 import { validateUpdateUser } from "@/infra/validators/zod/update-user.validator";
-import { validateUpdateUserProfilePicture } from "@/infra/validators/zod/update-profile-picture.validator";
+import { profilePictureUpload } from "../../middlewares/profile-picture-upload.middleware";
 
 export const userRouter = Router();
 
@@ -23,6 +23,6 @@ userRouter.patch(
 );
 userRouter.patch(
   "/profile-picture",
-  validateUpdateUserProfilePicture,
+  profilePictureUpload,
   expressAdaptRoute(updateUserProfilePictureController)
 );
