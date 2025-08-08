@@ -54,4 +54,17 @@ export class User implements IUser {
   get updatedAt() {
     return this._updatedAt;
   }
+
+  toObject() {
+    return {
+      id: this._id,
+      name: this._name,
+      email: this._email,
+      address: this._address,
+      profilePicture: this._profilePicture,
+      bankingDetails: this._bankingDetails,
+      createdAt: this._createdAt,
+      updatedAt: this._updatedAt,
+    };
+  }
 }

@@ -3,18 +3,12 @@ import { IController, ControllerInput, ControllerOutput } from "../IController";
 import { IUser } from "@/domain/entities/User/interfaces/user.interface";
 import { inject, injectable } from "tsyringe";
 
-type UpdateUserParams = {
-  id: string;
-};
+type UpdateUserBody = Partial<IUser>;
 
-type UpdateUserBody =  Partial<IUser>;
-
-type UpdateUserControllerInput = ControllerInput<
-  UpdateUserParams,
-  any,
-  UpdateUserBody
-> & {
-  params: UpdateUserParams;
+type UpdateUserControllerInput = ControllerInput<any, UpdateUserBody> & {
+  headers: {
+    "x-user-id": string;
+  };
   body: UpdateUserBody;
 };
 
@@ -28,7 +22,7 @@ export class UpdateUserController
   ) {}
 
   async handle(input: UpdateUserControllerInput): Promise<ControllerOutput> {
-    const { id } = input.params;
+    const id = input.headers["x-user-id"] as string;
     const updates = input.body;
     await this.updateUserUsecase.execute({ id, updates });
 

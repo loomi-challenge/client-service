@@ -2,12 +2,12 @@ import { FindUserUsecase } from "@/application/usecases/User/find-user.usecase";
 import { IController, ControllerInput, ControllerOutput } from "../IController";
 import { inject, injectable } from "tsyringe";
 
-type FindUserParams = {
-  id: string;
-};
 
-type FindUserControllerInput = ControllerInput<FindUserParams> & {
-  params: FindUserParams;
+
+type FindUserControllerInput = ControllerInput<any, any, any> & {
+  headers: {
+    "x-user-id": string;
+  };
 };
 
 @injectable()
@@ -21,7 +21,8 @@ export class FindUserController
   async handle(
     input: FindUserControllerInput
   ): Promise<ControllerOutput> {
-    const user = await this.findUserUsecase.execute(input.params.id);
+    const id = input.headers["x-user-id"] as string;
+    const user = await this.findUserUsecase.execute(id);
 
     return {
       statusCode: 200,

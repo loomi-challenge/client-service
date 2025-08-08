@@ -2,20 +2,18 @@ import { inject, injectable } from "tsyringe";
 import { IController, ControllerInput, ControllerOutput } from "../IController";
 import { UpdateUserProfilePictureUsecase } from "@/application/usecases/User/update-user-profile-picture.usecase";
 
-type UpdateUserProfilePictureParams = {
-  id: string;
-};
 
 type UpdateUserProfilePictureBody = {
   profilePicture: string;
 };
 
 type UpdateUserProfilePictureControllerInput = ControllerInput<
-  UpdateUserProfilePictureParams,
   any,
   UpdateUserProfilePictureBody
 > & {
-  params: UpdateUserProfilePictureParams;
+  headers: {
+    "x-user-id": string;
+  };
   body: UpdateUserProfilePictureBody;
 };
 
@@ -32,7 +30,7 @@ export class UpdateUserProfilePictureController
   async handle(
     input: UpdateUserProfilePictureControllerInput
   ): Promise<ControllerOutput> {
-    const { id } = input.params;
+    const id = input.headers["x-user-id"] as string;
     const { profilePicture } = input.body;
 
     await this.updateUserProfilePictureUsecase.execute({

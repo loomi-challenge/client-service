@@ -13,9 +13,9 @@ const updateUserProfilePictureController = container.resolve(
   UpdateUserProfilePictureController
 );
 
-userRouter.get("/:id", expressAdaptRoute(findUserController));
-userRouter.patch("/:id", expressAdaptRoute(updateUserController));
+userRouter.get("/", expressAdaptRoute(findUserController));
+userRouter.patch("/", expressAdaptRoute(updateUserController));
 userRouter.patch(
-  "/:id/profile-picture",
+  "/profile-picture",
   expressAdaptRoute(updateUserProfilePictureController)
 );

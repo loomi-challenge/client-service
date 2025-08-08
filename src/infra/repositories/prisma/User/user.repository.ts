@@ -26,11 +26,13 @@ export class UserRepository implements IUserGateway {
       email: user.email,
       address: user.address || undefined,
       profilePicture: user.profilePicture || undefined,
-      bankingDetails: user.bankingDetails ? {
-        agency: user.bankingDetails.agency,
-        accountNumber: user.bankingDetails.account,
-        balance: user.bankingDetails.balance,
-      } : undefined,
+      bankingDetails: user.bankingDetails
+        ? {
+            agency: user.bankingDetails.agency,
+            accountNumber: user.bankingDetails.account,
+            balance: user.bankingDetails.balance,
+          }
+        : undefined,
     });
   }
 
@@ -113,6 +115,18 @@ export class UserRepository implements IUserGateway {
       },
     });
 
+    await prisma.bankingDetails.create({
+      data: {
+        agency: userData.bankingDetails?.agency || "",
+        account: userData.bankingDetails?.accountNumber || "",
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
+      },
+    });
+
     return new User({
       id: user.id,
       name: user.name,
@@ -127,6 +141,8 @@ export class UserRepository implements IUserGateway {
       where: { email },
     });
 
-    return user ? new User({ id: user.id, name: user.name, email: user.email }) : null;
+    return user
+      ? new User({ id: user.id, name: user.name, email: user.email })
+      : null;
   }
 }
