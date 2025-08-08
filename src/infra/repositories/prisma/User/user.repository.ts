@@ -3,6 +3,7 @@ import { IUser } from "@/domain/entities/User/interfaces/user.interface";
 import { IUserGateway } from "@/domain/gateways/user.gateway";
 import { prisma } from "@/package/prisma";
 import { injectable } from "tsyringe";
+import { AppError } from "@/domain/errors/app-error";
 
 @injectable()
 export class UserRepository implements IUserGateway {
@@ -91,7 +92,7 @@ export class UserRepository implements IUserGateway {
     });
 
     if (!user?.bankingDetails) {
-      throw new Error("User has no banking details");
+      throw new AppError("Usuário não possui dados bancários", 400);
     }
 
     await prisma.bankingDetails.update({

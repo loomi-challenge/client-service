@@ -13,6 +13,7 @@ import {
   SignUpRequest,
 } from "@aws-sdk/client-cognito-identity-provider";
 import * as crypto from "crypto";
+import { AppError } from "@/domain/errors/app-error";
 
 export class CognitoAuthProvider implements IAuthProvider {
   private readonly clientId = process.env.COGNITO_CLIENT_ID;
@@ -20,7 +21,7 @@ export class CognitoAuthProvider implements IAuthProvider {
 
   private calculateSecretHash(username: string): string {
     if (!this.clientSecret) {
-      throw new Error("COGNITO_CLIENT_SECRET environment variable is required");
+      throw new AppError("COGNITO_CLIENT_SECRET environment variable is required", 500);
     }
 
     const message = username + this.clientId;
