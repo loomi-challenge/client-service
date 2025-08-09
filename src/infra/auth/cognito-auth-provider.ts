@@ -57,6 +57,9 @@ export class CognitoAuthProvider implements IAuthProvider {
       if (error.__type === 'NotAuthorizedException' || error.name === 'NotAuthorizedException') {
         throw new AppError("Credenciais inválidas", 401);
       }
+      if (error.__type === 'UserNotConfirmedException' || error.name === 'UserNotConfirmedException') {
+        throw new AppError("Usuário não confirmado. Verifique seu email e confirme sua conta antes de fazer login.", 400);
+      }
       throw error;
     }
   }

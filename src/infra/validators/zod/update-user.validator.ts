@@ -4,12 +4,12 @@ import { NextFunction, Request, Response } from "express";
 
 export const updateUserSchema = z.object({
   name: z.string().min(3, { message: "O nome deve ter pelo menos 3 caracteres" }),
-  address: z.string().min(3, { message: "O endereço deve ter pelo menos 3 caracteres" }),
+  address: z.string().min(3, { message: "O endereço deve ter pelo menos 3 caracteres" }).optional(),
   bankingDetails: z.object({
-    agency: z.string().min(3, { message: "A agência deve ter pelo menos 3 caracteres" }),
-    accountNumber: z.string().min(3, { message: "O número da conta deve ter pelo menos 3 caracteres" }),
-  }),
-});
+    agency: z.string().min(3, { message: "A agência deve ter pelo menos 3 caracteres" }).optional(),
+    accountNumber: z.string().min(3, { message: "O número da conta deve ter pelo menos 3 caracteres" }).optional(),
+  }).optional(),
+}); 
 
 export function validateUpdateUser(
   req: Request,

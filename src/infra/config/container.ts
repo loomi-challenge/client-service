@@ -12,11 +12,16 @@ import { ResendConfirmationCodeUseCase } from "@/application/usecases/Auth/resen
 import { CognitoAuthProvider } from "../auth/cognito-auth-provider";
 import { UserCacheRepository } from "../repositories/cache/User/user-cache.repository";
 import { S3StorageRepository } from "../repositories/storage/s3-storage.repository";
+import { ListUsersUsecase } from "@/application/usecases/User/list-users.usecase";
 
 // User
 
 container.register<IUserGateway>("UserGateway", {
   useClass: UserRepository,
+});
+
+container.register("ListUsersUsecase", {
+  useClass: ListUsersUsecase,
 });
 
 container.register("FindUserUsecase", {
