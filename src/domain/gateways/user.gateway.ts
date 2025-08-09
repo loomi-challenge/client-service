@@ -16,4 +16,5 @@ export interface IUserGateway {
     amount: number;
     type: "in" | "out";
   }): Promise<void>;
+  listAllUsers(limit: number): Promise<User[]>;
 }

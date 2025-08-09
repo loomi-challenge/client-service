@@ -146,4 +146,22 @@ export class UserRepository implements IUserGateway {
       ? new User({ id: user.id, name: user.name, email: user.email })
       : null;
   }
+
+  async listAllUsers(limit: number): Promise<User[]> {
+    const users = await prisma.user.findMany({
+      take: limit || 10,
+      include: {
+        bankingDetails: true,
+      },
+    });
+
+    return users.map((user) => new User({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        address: user.address || undefined,
+        profilePicture: user.profilePicture || undefined,
+      })
+    );
+  }
 }
